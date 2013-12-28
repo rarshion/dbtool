@@ -1,28 +1,32 @@
 package com.ablesky.dbtool.pojo;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.jdbc.core.RowMapper;
 
 public class Column {
 	
+	public static final String NULLABLE_YES = "YES";
+	public static final String NULLABLE_NO = "NO";
+	
+	// 要考虑自定义注解了
 	private String tableSchema;
 	private String tableName;
-	private String columnName;
+	private String columnName;			// 需要比较
 	private Integer ordinalPosition;
-	private String columnDefault;
-	private String isNullable;
-	private String dataType;
-	private Long characterMaximumLength;
+	private String columnDefault;		// 需要比较
+	private String isNullable;			// 需要比较
+	private String dataType;			// 需要比较
+	private Long characterMaximumLength;// 需要比较
 	private Long characterOctetLength;
 	private BigDecimal numericPrecision;
 	private Long numericScale;
 	private String characterSetName;
 	private String collationName;
-	private String columnType;
+	private String columnType;			// 需要比较
 	private String columnKey;
 	private String extra;
 	private String columnComment;
@@ -162,10 +166,18 @@ public class Column {
 	public void setColumnComment(String columnComment) {
 		this.columnComment = columnComment;
 	}
+	
+	public boolean isNullable() {
+		return NULLABLE_NO.equalsIgnoreCase(isNullable)? false: true;
+	}
 
 	@Override
 	public String toString() {
 		return this.tableSchema + "." + this.tableName + "." + this.columnName + ": " + this.columnType + " DEFAULT " + this.columnDefault;
+	}
+	
+	public String toFullString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	public static enum ColumnField {
