@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ablesky.dbtool.dao.IDataBaseDao;
 import com.ablesky.dbtool.pojo.Column;
+import com.ablesky.dbtool.pojo.DataBase;
 import com.ablesky.dbtool.pojo.Table;
 import com.ablesky.dbtool.service.IDataBaseService;
 
@@ -21,6 +21,16 @@ public class DataBaseServiceImpl implements IDataBaseService {
 
 	@Autowired
 	private IDataBaseDao dataBaseDao;
+	
+	@Override
+	public DataBase getDataBaseByAddressAndDbName(String address, String dbName) {
+		return dataBaseDao.getDataBaseByAddressAndDbName(address, dbName);
+	}
+	
+	@Override
+	public List<DataBase> getDataBaseListByAddress(String address) {
+		return dataBaseDao.getDataBaseListByAddress(address);
+	}
 
 	@Override
 	public List<Table> getTableListByAddressAndDatabase(String address, String database) {
@@ -54,6 +64,38 @@ public class DataBaseServiceImpl implements IDataBaseService {
 			table.addColumn(column);
 		}
 		return tableMap;
+	}
+	
+	/**
+	 * 批量填充dataBase中的信息
+	 */
+	@Override
+	public Map<String, DataBase> fillDataBasesWithTables(String address, List<DataBase> dbList) {
+		if(StringUtils.isEmpty(address) || CollectionUtils.isEmpty(dbList)) {
+			return Collections.emptyMap();
+		}
+		Map<String, DataBase> dbMap = new HashMap<String, DataBase>();
+		for(DataBase db: dbList) {
+			List<Table> tblList = getTableListByAddressAndDatabase(address, db.getSchemaName());
+			fillTablesWithColumns(address, tblList);
+			db.addAllTables(tblList);
+			dbMap.put(db.getSchemaName(), db);
+		}
+		return dbMap;
+	}
+	
+	/**
+	 * 为单个dataBase填充表信息和列信息
+	 */
+	@Override
+	public DataBase fillDataBaseWithTables(String address, DataBase db) {
+		if(StringUtils.isEmpty(address) || db == null) {
+			return db;
+		}
+		List<Table> tblList = getTableListByAddressAndDatabase(address, db.getSchemaName());
+		fillTablesWithColumns(address, tblList);
+		db.addAllTables(tblList);
+		return db;
 	}
 	
 	
