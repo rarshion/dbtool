@@ -15,6 +15,7 @@ $(function(){
 	initShowSqlBtn();
 	initDbNameSel('#J_sampleAddress', '#J_sampleDbName');
 	initDbNameSel('#J_targetAddress', '#J_targetDbName');
+	initClearBtn();
 });
 
 function initShowSqlBtn() {
@@ -86,6 +87,19 @@ function initDbNameSel(addressSelSelector, dbNameSelSelector) {
 		});
 	});
 }
+
+function initClearBtn(){
+	var $sqlPre = $('#J_sqlPre'),
+		$sampleAddressSel = $('#J_sampleAddress'),
+		$targetAddressSel = $('#J_targetAddress');
+	$('#J_clearBtn').on('click', function(){
+		$sqlPre.empty();
+		$sampleAddressSel.val('');
+		$sampleAddressSel.trigger('change');
+		$targetAddressSel.val('');
+		$targetAddressSel.trigger('change');
+	});
+}
 </script>
 </head>
 <body>
@@ -128,7 +142,9 @@ function initDbNameSel(addressSelSelector, dbNameSelSelector) {
 				</tr>
 				<tr>
 					<td colspan="4" style="text-align: center;">
-						<button id="J_compareBtn" class="btn btn-primary">比较差异并获取sql</button>
+						<button id="J_compareBtn" class="btn btn-primary">比较差异</button>
+						&nbsp;&nbsp;
+						<button id="J_clearBtn" class="btn">&nbsp;清&nbsp;&nbsp;除&nbsp;</button>
 					</td>
 				</tr>
 			</tbody>
