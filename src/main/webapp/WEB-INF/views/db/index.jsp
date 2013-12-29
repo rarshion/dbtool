@@ -47,7 +47,7 @@ function initShowSqlBtn() {
 				return;
 			}
 			$.each(data.sqlList, function(i, sql){
-				$sqlPre.append(sql + "\n");
+				$sqlPre.append(sql + "\n\n");
 			});
 		});
 	});

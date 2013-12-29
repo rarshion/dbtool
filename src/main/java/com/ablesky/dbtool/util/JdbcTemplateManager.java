@@ -11,9 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 public class JdbcTemplateManager {
 	
-	public static final String DEFAULT_USERANME = "root";
-	public static final String DEFAULT_PASSWORD = "123456";
-	
 	private static Map<String, NamedParameterJdbcTemplate> jdbcTemplatePool = new HashMap<String, NamedParameterJdbcTemplate>();
 	
 	public static JdbcTemplate getJdbcTemplateByAddress(String address) {
@@ -27,7 +24,7 @@ public class JdbcTemplateManager {
 	}
 	
 	public static NamedParameterJdbcTemplate getNamedParameterJdbcTemplateByAddress(String address) {
-		return getNamedParameterJdbcTemplateByAddress(address, DEFAULT_USERANME, DEFAULT_PASSWORD);
+		return getNamedParameterJdbcTemplateByAddress(address, DbInfoConfig.getUsernameViaAddress(address), DbInfoConfig.getPasswordViaAddress(address));
 	}
 	
 	public static NamedParameterJdbcTemplate getNamedParameterJdbcTemplateByAddress(String address, String username, String password) {
