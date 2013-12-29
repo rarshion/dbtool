@@ -16,7 +16,7 @@
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/information_schema" />
 		<property name="username" value="root" />
-		<property name="password" value="mysqlpwd1" />
+		<property name="password" value="123456" />
 	</bean>
 
 	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">

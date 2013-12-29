@@ -3,14 +3,17 @@ package com.ablesky.dbtool.pojo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.jdbc.core.RowMapper;
 
-public class Table {
+public class Table implements SchemaInfo {
 
 	private String tableSchema;
 	private String tableName;
@@ -109,6 +112,10 @@ public class Table {
 		return columnMap.size();
 	}
 	
+	public List<Column> getColumnList() {
+		return Collections.unmodifiableList(new ArrayList<Column>(columnMap.values()));
+	}
+	
 	public static enum TableField {
 		TABLE_SCHEMA,
 		TABLE_NAME,
@@ -125,12 +132,62 @@ public class Table {
 		;
 	}
 	
+
+	@Override
+	public ContrastResult contrastTo(SchemaInfo schemaInfo) {
+		if(schemaInfo == null) {
+			return new ContrastResult(this, ContrastResult.Operation.create);
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || ! (obj instanceof Table)) {
+			return false;
+		}
+		Table tbl = (Table) obj;
+		if(!this.tableSchema.equals(tbl.tableSchema)
+				|| !this.tableName.equals(tbl.tableName)) {
+			return false;
+		}
+		return true;
+	}
+	
 	public String toString() {
 		return this.tableSchema + "." + this.tableName;
 	}
 	
 	public String toFullString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+	
+	@Override
+	public String generateCreateSql() {
+		StringBuilder sqlBuff = new StringBuilder()
+			.append("CREATE TABLE ")
+			.append("`").append(this.tableName).append("`")
+			.append(" (").append("\n  ")
+		;
+		boolean isFirst = true;
+		for(Column column: columnMap.values()) {
+			if(!isFirst) {
+				sqlBuff.append(",\n  ");
+			}
+			sqlBuff.append(column.generateDeclareSql());
+			isFirst = false;
+		}
+		sqlBuff.append("\n)")
+			.append(" ENGINE=").append(this.engine);
+		if(!StringUtils.isEmpty(this.tableCollation)) {
+			sqlBuff.append(" COLLATE=").append(this.tableCollation);
+		}
+		return sqlBuff.append(";").toString();
+	}
+	
+	@Override
+	public String generateUpdateSql() {
+		return "";
 	}
 	
 	public static class TableRowMapper implements RowMapper<Table> {
@@ -154,4 +211,5 @@ public class Table {
 		}
 		
 	}
+
 }

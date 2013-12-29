@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.jdbc.core.RowMapper;
 
-public class Column {
+public class Column implements SchemaInfo {
 	
 	public static final String NULLABLE_YES = "YES";
 	public static final String NULLABLE_NO = "NO";
@@ -176,8 +177,89 @@ public class Column {
 		return this.tableSchema + "." + this.tableName + "." + this.columnName + ": " + this.columnType + " DEFAULT " + this.columnDefault;
 	}
 	
+	@Override
+	public boolean equals(Object obj){
+		if(obj == null || !(obj instanceof Column)) {
+			return false;
+		}
+		Column col = (Column) obj;
+		if(!this.tableName.equals(col.tableName)
+				|| !this.columnName.equals(col.columnName)
+				|| this.columnDefault != null && !this.columnDefault.equals(col.columnDefault)
+				|| !this.isNullable.equals(col.isNullable)
+				|| !this.dataType.equals(col.dataType)
+				|| !this.columnType.equals(col.columnType)) {
+			return false;
+		}
+		return true;
+	}
+	
 	public String toFullString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+	
+	@Override
+	public String generateCreateSql() {
+		return new StringBuilder()
+			.append("ALTER TABLE ")
+			.append("`").append(this.tableName).append("`")
+			.append(" ADD COLUMN ")
+			.append(generateDeclareSql())
+			.append(";")
+			.toString();
+	}
+	
+	@Override
+	public String generateUpdateSql() {
+		return new StringBuilder()
+			.append("ALTER TABLE ")
+			.append("`").append(this.tableName).append("`")
+			.append(" CHANGE COLUMN ")
+			.append(this.columnName)
+			.append(" ")
+			.append(generateDeclareSql())
+			.append(";")
+			.toString();
+	}
+	
+	public String generateDeclareSql() {
+		StringBuilder sqlBuff = new StringBuilder()
+			.append("`").append(this.columnName).append("`")
+			.append(" ")
+			.append(this.columnType)
+			.append(" ");
+		;
+		boolean isPrimaryKey = "PRI".equals(this.columnKey);
+		if(!isPrimaryKey && !this.isNullable()) {
+			sqlBuff.append("NOT NULL").append(" ");
+		}
+		if(this.columnDefault != null) {
+			sqlBuff.append("DEFAULT '").append(this.columnDefault).append("' ");
+		}
+		if(isPrimaryKey) {
+			sqlBuff.append("PRIMARY KEY ");
+		}
+		if("auto_increment".equals(this.extra)) {
+			sqlBuff.append("AUTO_INCREMENT ");
+		}
+		if(!StringUtils.isEmpty(this.columnComment)) {
+			sqlBuff.append("COMMENT '").append(this.columnComment).append("'");
+		}
+		return sqlBuff.toString();
+	}
+	
+	@Override
+	public ContrastResult contrastTo(SchemaInfo schemaInfo) {
+		if(schemaInfo == null) {
+			return new ContrastResult(this, ContrastResult.Operation.create);
+		}
+		if(!(schemaInfo instanceof Column)) {
+			return null;
+		}
+		if(!equals(schemaInfo)) {
+			return new ContrastResult(this, ContrastResult.Operation.update);
+		}
+		return null;
 	}
 
 	public static enum ColumnField {
@@ -226,4 +308,5 @@ public class Column {
 		}
 		
 	}
+
 }
