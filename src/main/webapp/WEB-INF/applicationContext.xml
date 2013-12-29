@@ -10,7 +10,7 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
     	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	<!-- bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
@@ -22,5 +22,5 @@
 	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
 		<constructor-arg name="dataSource" ref="dataSource"></constructor-arg>
 	</bean>
-
+	 -->
 </beans>

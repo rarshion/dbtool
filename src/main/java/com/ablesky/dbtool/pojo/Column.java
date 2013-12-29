@@ -3,6 +3,9 @@ package com.ablesky.dbtool.pojo;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -249,17 +252,17 @@ public class Column implements SchemaInfo {
 	}
 	
 	@Override
-	public ContrastResult contrastTo(SchemaInfo schemaInfo) {
+	public List<ContrastResult> contrastTo(SchemaInfo schemaInfo) {
+		List<ContrastResult> crList = new ArrayList<ContrastResult>();
 		if(schemaInfo == null) {
-			return new ContrastResult(this, ContrastResult.Operation.create);
-		}
-		if(!(schemaInfo instanceof Column)) {
-			return null;
+			crList.add(new ContrastResult(this, ContrastResult.Operation.create));
+			return crList;
 		}
 		if(!equals(schemaInfo)) {
-			return new ContrastResult(this, ContrastResult.Operation.update);
+			crList.add(new ContrastResult(this, ContrastResult.Operation.update));
+			return crList;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public static enum ColumnField {

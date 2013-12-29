@@ -134,11 +134,20 @@ public class Table implements SchemaInfo {
 	
 
 	@Override
-	public ContrastResult contrastTo(SchemaInfo schemaInfo) {
+	public List<ContrastResult> contrastTo(SchemaInfo schemaInfo) {
+		List<ContrastResult> crList = new ArrayList<ContrastResult>();
 		if(schemaInfo == null) {
-			return new ContrastResult(this, ContrastResult.Operation.create);
+			crList.add(new ContrastResult(this, ContrastResult.Operation.create));
+			return crList;
 		}
-		return null;
+		if(!(schemaInfo instanceof Table)) {
+			return Collections.emptyList();
+		}
+		Table targetTable = (Table) schemaInfo;
+		for(Column column: columnMap.values()) {
+			crList.addAll(column.contrastTo(targetTable.getColumn(column.getColumnName())));
+		}
+		return crList;
 	}
 	
 	@Override
