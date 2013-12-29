@@ -8,6 +8,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 
 public class WebUtil {
 	
@@ -15,23 +17,29 @@ public class WebUtil {
 	
 	private WebUtil(){}
 	
-	public static void writeResponse(HttpServletResponse response, Map<String, Object> resultMap) throws IOException {
+	public static void writeResponse(HttpServletResponse response, Map<String, Object> resultMap) {
 		writeResponse(response, JsonUtil.obj2Json(resultMap));
 	}
 
-	public static void writeResponse(HttpServletResponse response, String content) throws IOException{
+	public static void writeResponse(HttpServletResponse response, String content) {
 		writeResponse(response, content, "utf-8");
 	}
 	
-	public static void writeResponse(HttpServletResponse response, String content, String charset) throws IOException{
+	public static void writeResponse(HttpServletResponse response, String content, String charset) {
 		if(charset == "" || charset.trim() == ""){
 			charset = "utf-8";
 		}
 		response.setContentType("text/plain;charset=" + charset);
-		PrintWriter writer = response.getWriter();
-		writer.write(content);
-		writer.flush();
-		writer.close();
+		PrintWriter writer = null;
+		try {
+			writer = response.getWriter();
+			writer.write(content);
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
 	}
 	
 	public static String getCookie(HttpServletRequest request, String name){

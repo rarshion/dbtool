@@ -27,7 +27,7 @@ public class TestController {
 	
 	@RequestMapping("/index")
 	public String index(HttpServletResponse response) throws IOException {
-		return "index";
+		return "db/index";
 	}
 	
 	@RequestMapping("/getSql")

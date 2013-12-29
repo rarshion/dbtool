@@ -2,8 +2,10 @@ package com.ablesky.dbtool.dao.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +21,12 @@ import com.ablesky.dbtool.util.JdbcTemplateManager;
 @Repository
 public class DataBaseDaoImpl implements IDataBaseDao {
 	
-	private static final String INFORMATION_SCHEMA_DB_NAME = "information_schema";
+	@SuppressWarnings("serial")
+	private static final Set<String> INTERNAL_DB_NAME_SET = Collections.unmodifiableSet(new HashSet<String>(){{
+		add("mysql");
+		add("information_schema");
+		add("performance_schema");
+	}});
 	
 	@Override
 	public List<DataBase> getDataBaseListByAddress(String address) {
@@ -30,13 +37,17 @@ public class DataBaseDaoImpl implements IDataBaseDao {
 		if(template == null) {
 			return Collections.emptyList();
 		}
-		String sql = "select * from information_schema.schemata where schema_name != '" + INFORMATION_SCHEMA_DB_NAME + "' order by schema_name";
-		return template.query(sql, new DataBase.DataBaseRowMapper());
+		StringBuilder sqlBuff = new StringBuilder("select * from information_schema.schemata where 1 = 1 ");
+		for(String internalDbName: INTERNAL_DB_NAME_SET) {
+			sqlBuff.append(" and schema_name != '").append(internalDbName).append("' ");
+		}
+		sqlBuff.append(" order by schema_name ");
+		return template.query(sqlBuff.toString(), new DataBase.DataBaseRowMapper());
 	}
 	
 	@Override
 	public DataBase getDataBaseByAddressAndDbName(String address, String dbName) {
-		if(StringUtils.isEmpty(address) || StringUtils.isEmpty(dbName) || INFORMATION_SCHEMA_DB_NAME.equals(dbName)) {
+		if(StringUtils.isEmpty(address) || StringUtils.isEmpty(dbName) || INTERNAL_DB_NAME_SET.contains(dbName)) {
 			return null;
 		}
 		NamedParameterJdbcTemplate template = JdbcTemplateManager.getNamedParameterJdbcTemplateByAddress(address);
