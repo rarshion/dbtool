@@ -114,6 +114,10 @@ function initClearBtn(){
 						<select id="J_targetAddress" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
 							<option value="localhost">localhost</option>
+							<option value="192.168.200.24">200.24</option>
+							<option value="192.168.120.201">beta</option>
+							<option value="192.168.120.110">gamma</option>
+							<option value="192.168.3.91">3.91</option>
 						</select>
 					</td>
 					<td>
@@ -130,6 +134,10 @@ function initClearBtn(){
 						<select id="J_sampleAddress" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
 							<option value="localhost">localhost</option>
+							<option value="192.168.200.24">200.24</option>
+							<option value="192.168.120.201">beta</option>
+							<option value="192.168.120.110">gamma</option>
+							<option value="192.168.3.91">3.91</option>
 						</select>
 					</td>
 					<td>
