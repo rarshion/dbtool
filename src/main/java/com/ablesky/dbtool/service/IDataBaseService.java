@@ -23,4 +23,6 @@ public interface IDataBaseService {
 
 	DataBase getDataBaseByAddressAndDbName(String address, String dbName);
 
+	Map<String, Table> fillTablesWithColumns(String address, List<Table> tableList, List<Column> columnList);
+
 }

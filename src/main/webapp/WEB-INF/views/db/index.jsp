@@ -113,18 +113,15 @@ function initClearBtn(){
 						<label style="display: inline-block; margin-left: 15px;">目标数据库地址: </label>
 						<select id="J_targetAddress" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
-							<option value="localhost">localhost</option>
-							<option value="192.168.200.24">200.24</option>
-							<option value="192.168.120.201">beta</option>
-							<option value="192.168.120.110">gamma</option>
-							<option value="192.168.3.91">3.91</option>
+							<c:forEach var="dbInfo" items="${dbInfoList}">
+								<option value="${dbInfo.address}">${dbInfo.name}</option>
+							</c:forEach>
 						</select>
 					</td>
 					<td>
 						<label style="display: inline-block; margin-left: 15px;">目标数据库名称: </label>
 						<select id="J_targetDbName" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
-							<option value="miaov1">miaov1</option>
 						</select>
 					</td>
 				</tr>
@@ -133,18 +130,15 @@ function initClearBtn(){
 						<label style="display: inline-block; margin-left: 15px;">范本数据库地址: </label>
 						<select id="J_sampleAddress" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
-							<option value="localhost">localhost</option>
-							<option value="192.168.200.24">200.24</option>
-							<option value="192.168.120.201">beta</option>
-							<option value="192.168.120.110">gamma</option>
-							<option value="192.168.3.91">3.91</option>
+							<c:forEach var="dbInfo" items="${dbInfoList}">
+								<option value="${dbInfo.address}">${dbInfo.name}</option>
+							</c:forEach>
 						</select>
 					</td>
 					<td>
 						<label style="display: inline-block; margin-left: 15px;">范本数据库名称: </label>
 						<select id="J_sampleDbName" style="margin-bottom: 0px; width: 180px;">
 							<option value="">请选择...</option>
-							<option value="miaov2">miaov2</option>
 						</select>
 					</td>
 				</tr>

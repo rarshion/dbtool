@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ablesky.dbtool.pojo.Column;
@@ -17,6 +21,7 @@ import com.ablesky.dbtool.pojo.DataBase;
 import com.ablesky.dbtool.pojo.SchemaInfo;
 import com.ablesky.dbtool.pojo.Table;
 import com.ablesky.dbtool.service.IDataBaseService;
+import com.ablesky.dbtool.util.DbInfoConfig;
 import com.ablesky.dbtool.util.WebUtil;
 
 @Controller
@@ -27,7 +32,8 @@ public class DataBaseController {
 	private IDataBaseService dataBaseService;
 	
 	@RequestMapping("/index")
-	public String index(){
+	public String index(Model model){
+		model.addAttribute("dbInfoList", DbInfoConfig.getDbInfoList());
 		return "db/index";
 	}
 
@@ -40,15 +46,17 @@ public class DataBaseController {
 	}
 	
 	@RequestMapping("/compare")
-	public void compare(
+	public void compare (
 			String sampleAddress,
 			String sampleDbName,
 			String targetAddress,
 			String targetDbName,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		DataBase sampleDb = getLoadedDb(sampleAddress, sampleDbName);
-		DataBase targetDb = getLoadedDb(targetAddress, targetDbName);
+		Future<DataBase> sampleDbFuture = getLoadedDbFuture(sampleAddress, sampleDbName);
+		Future<DataBase> targetDbFuture = getLoadedDbFuture(targetAddress, targetDbName);
+		DataBase sampleDb = sampleDbFuture.get();
+		DataBase targetDb = targetDbFuture.get();
 		if(sampleDb == null) {
 			resultMap.put("success", false);
 			resultMap.put("message", "样本数据库不存在!");
@@ -78,5 +86,14 @@ public class DataBaseController {
 	private DataBase getLoadedDb(String address, String dbName) {
 		DataBase db = dataBaseService.getDataBaseByAddressAndDbName(address, dbName);
 		return dataBaseService.fillDataBaseWithTables(address, db);
+	}
+	
+	private Future<DataBase> getLoadedDbFuture(final String address, final String dbName) {
+		return Executors.newSingleThreadScheduledExecutor().submit(new Callable<DataBase>() {
+			@Override
+			public DataBase call() throws Exception {
+				return getLoadedDb(address, dbName);
+			}
+		});
 	}
 }

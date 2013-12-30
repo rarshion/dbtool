@@ -69,7 +69,7 @@ public class DataBaseDaoImpl implements IDataBaseDao {
 		if(template == null) {
 			return Collections.emptyList();
 		}
-		String sql = "select * from information_schema.tables where table_schema = :database order by table_name ";;
+		String sql = "select table_schema, table_name, engine, table_collation, table_comment from information_schema.tables where table_schema = :database order by table_name ";
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("database", database);
 		return template.query(sql, params, new Table.TableRowMapper());

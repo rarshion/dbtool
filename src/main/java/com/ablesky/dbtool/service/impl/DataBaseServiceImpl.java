@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,19 +47,26 @@ public class DataBaseServiceImpl implements IDataBaseService {
 	
 	@Override
 	public Map<String, Table> fillTablesWithColumns(String address, List<Table> tableList) {
-		if(StringUtils.isEmpty(address) || CollectionUtils.isEmpty(tableList)) {
+		if(CollectionUtils.isEmpty(tableList)) {
 			return Collections.emptyMap();
 		}
 		Table table = tableList.get(0);
 		if(StringUtils.isEmpty(table.getTableSchema())) {
 			return Collections.emptyMap();
 		}
-		List<Column> columnList = getColumnListByAddressAndDatabase(address, table.getTableSchema());
+		return fillTablesWithColumns(address, tableList, getColumnListByAddressAndDatabase(address, table.getTableSchema()));
+	}
+	
+	@Override
+	public Map<String, Table> fillTablesWithColumns(String address, List<Table> tableList, List<Column> columnList) {
+		if(StringUtils.isEmpty(address) || CollectionUtils.isEmpty(tableList)) {
+			return Collections.emptyMap();
+		}
 		Map<String, Table> tableMap = new HashMap<String, Table>();
 		for(Table tbl: tableList) {
 			tableMap.put(tbl.getTableName(), tbl);
 		}
-		table = null;
+		Table table = null;
 		for(Column column: columnList) {
 			if(table == null || !table.getTableName().equals(column.getTableName())) {
 				table = tableMap.get(column.getTableName());
@@ -88,7 +98,7 @@ public class DataBaseServiceImpl implements IDataBaseService {
 	 * 为单个dataBase填充表信息和列信息
 	 */
 	@Override
-	public DataBase fillDataBaseWithTables(String address, DataBase db) {
+	public DataBase fillDataBaseWithTables(final String address, final DataBase db) {
 		if(StringUtils.isEmpty(address) || db == null) {
 			return db;
 		}

@@ -17,14 +17,14 @@ public class Table implements SchemaInfo {
 
 	private String tableSchema;
 	private String tableName;
-	private String tableType;
+	//private String tableType;
 	private String engine;
-	private Long tableRows;
-	private Long dataLength;
-	private Long indexLength;
-	private Long autoIncrement;
-	private Timestamp createTime;
-	private Timestamp updateTime;
+	//private Long tableRows;
+	//private Long dataLength;
+	//private Long indexLength;
+	//private Long autoIncrement;
+	//private Timestamp createTime;
+	//private Timestamp updateTime;
 	private String tableCollation;
 	private String tableComment;
 	
@@ -42,54 +42,54 @@ public class Table implements SchemaInfo {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-	public String getTableType() {
-		return tableType;
-	}
-	public void setTableType(String tableType) {
-		this.tableType = tableType;
-	}
+//	public String getTableType() {
+//		return tableType;
+//	}
+//	public void setTableType(String tableType) {
+//		this.tableType = tableType;
+//	}
 	public String getEngine() {
 		return engine;
 	}
 	public void setEngine(String engine) {
 		this.engine = engine;
 	}
-	public Long getTableRows() {
-		return tableRows;
-	}
-	public void setTableRows(Long tableRows) {
-		this.tableRows = tableRows;
-	}
-	public Long getDataLength() {
-		return dataLength;
-	}
-	public void setDataLength(Long dataLength) {
-		this.dataLength = dataLength;
-	}
-	public Long getIndexLength() {
-		return indexLength;
-	}
-	public void setIndexLength(Long indexLength) {
-		this.indexLength = indexLength;
-	}
-	public Long getAutoIncrement() {
-		return autoIncrement;
-	}
-	public void setAutoIncrement(Long autoIncrement) {
-		this.autoIncrement = autoIncrement;
-	}
-	public Timestamp getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(Timestamp createTime) {
-		this.createTime = createTime;
-	}
-	public Timestamp getUpdateTime() {
-		return updateTime;
-	}
-	public void setUpdateTime(Timestamp updateTime) {
-		this.updateTime = updateTime;
-	}
+//	public Long getTableRows() {
+//		return tableRows;
+//	}
+//	public void setTableRows(Long tableRows) {
+//		this.tableRows = tableRows;
+//	}
+//	public Long getDataLength() {
+//		return dataLength;
+//	}
+//	public void setDataLength(Long dataLength) {
+//		this.dataLength = dataLength;
+//	}
+//	public Long getIndexLength() {
+//		return indexLength;
+//	}
+//	public void setIndexLength(Long indexLength) {
+//		this.indexLength = indexLength;
+//	}
+//	public Long getAutoIncrement() {
+//		return autoIncrement;
+//	}
+//	public void setAutoIncrement(Long autoIncrement) {
+//		this.autoIncrement = autoIncrement;
+//	}
+//	public Timestamp getCreateTime() {
+//		return createTime;
+//	}
+//	public void setCreateTime(Timestamp createTime) {
+//		this.createTime = createTime;
+//	}
+//	public Timestamp getUpdateTime() {
+//		return updateTime;
+//	}
+//	public void setUpdateTime(Timestamp updateTime) {
+//		this.updateTime = updateTime;
+//	}
 	public String getTableCollation() {
 		return tableCollation;
 	}
@@ -209,14 +209,14 @@ public class Table implements SchemaInfo {
 			Table table = new Table();
 			table.setTableSchema(rs.getString(TableField.TABLE_SCHEMA.name()));
 			table.setTableName(rs.getString(TableField.TABLE_NAME.name()));
-			table.setTableType(rs.getString(TableField.TABLE_TYPE.name()));
+//			table.setTableType(rs.getString(TableField.TABLE_TYPE.name()));
 			table.setEngine(rs.getString(TableField.ENGINE.name()));
-			table.setTableRows(rs.getLong(TableField.TABLE_ROWS.name()));
-			table.setDataLength(rs.getLong(TableField.DATA_LENGTH.name()));
-			table.setIndexLength(rs.getLong(TableField.INDEX_LENGTH.name()));
-			table.setAutoIncrement(rs.getLong(TableField.AUTO_INCREMENT.name()));
-			table.setCreateTime(rs.getTimestamp(TableField.CREATE_TIME.name()));
-			table.setUpdateTime(rs.getTimestamp(TableField.UPDATE_TIME.name()));
+//			table.setTableRows(rs.getLong(TableField.TABLE_ROWS.name()));
+//			table.setDataLength(rs.getLong(TableField.DATA_LENGTH.name()));
+//			table.setIndexLength(rs.getLong(TableField.INDEX_LENGTH.name()));
+//			table.setAutoIncrement(rs.getLong(TableField.AUTO_INCREMENT.name()));
+//			table.setCreateTime(rs.getTimestamp(TableField.CREATE_TIME.name()));
+//			table.setUpdateTime(rs.getTimestamp(TableField.UPDATE_TIME.name()));
 			table.setTableCollation(rs.getString(TableField.TABLE_COLLATION.name()));
 			table.setTableComment(rs.getString(TableField.TABLE_COMMENT.name()));
 			return table;
