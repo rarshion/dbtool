@@ -240,7 +240,12 @@ public class Column implements SchemaInfo {
 			sqlBuff.append("NOT NULL").append(" ");
 		}
 		if(this.columnDefault != null) {
-			sqlBuff.append("DEFAULT '").append(this.columnDefault).append("' ");
+			sqlBuff.append("DEFAULT ");
+			if("b'0'".equalsIgnoreCase(this.columnDefault) || "b'1'".equalsIgnoreCase(this.columnDefault)) {
+				sqlBuff.append(this.columnDefault).append(" ");
+			} else {
+				sqlBuff.append("'").append(this.columnDefault).append("' ");
+			}
 		}
 		if(isPrimaryKey) {
 			sqlBuff.append("PRIMARY KEY ");
