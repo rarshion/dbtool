@@ -63,6 +63,12 @@ public class DataBaseController {
 			WebUtil.writeResponse(response, resultMap);
 			return;
 		}
+		resultMap.put("sqlList", compare(sampleDb, targetDb));
+		resultMap.put("success", true);
+		WebUtil.writeResponse(response, resultMap);
+	}
+	
+	private List<String> compare(DataBase sampleDb, DataBase targetDb) {
 		List<ContrastResult> crList = sampleDb.contrastTo(targetDb);
 		List<String> sqlList = new ArrayList<String>(crList.size());
 		List<String> tblSqlList = new ArrayList<String>();
@@ -78,9 +84,7 @@ public class DataBaseController {
 		}
 		sqlList.addAll(tblSqlList);
 		sqlList.addAll(colSqlList);
-		resultMap.put("sqlList", sqlList);
-		resultMap.put("success", true);
-		WebUtil.writeResponse(response, resultMap);
+		return sqlList;
 	}
 	
 	private DataBase getLoadedDb(String address, String dbName) {

@@ -8,7 +8,25 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>数据库结构比较工具</title>
 <link type="text/css" rel="stylesheet" href="${ctx_path}/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="${ctx_path}/css/syntaxhighlighter/shCore.css">
+<link type="text/css" rel="stylesheet" href="${ctx_path}/css/syntaxhighlighter/shThemeDefault.css">
+<script type="text/javascript" src="${ctx_path}/js/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="${ctx_path}/js/syntaxhighlighter/shBrushSql.js"></script>
 <script type="text/javascript" src="${ctx_path}/js/jquery/jquery.js"></script>
+<style>
+.syntaxhighlighter a, 
+.syntaxhighlighter div, 
+.syntaxhighlighter code, 
+.syntaxhighlighter table, 
+.syntaxhighlighter table td, 
+.syntaxhighlighter table tr, 
+.syntaxhighlighter table tbody, 
+.syntaxhighlighter table thead, 
+.syntaxhighlighter table caption, 
+.syntaxhighlighter textarea {
+	font-size: 13px !important;
+}
+</style>
 <script>
 var CTX_PATH = '${ctx_path}';
 $(function(){
@@ -20,7 +38,7 @@ $(function(){
 
 function initShowSqlBtn() {
 	var url = CTX_PATH + '/db/compare',
-		$sqlPre = $('#J_sqlPre');
+		$sqlPreWrapper = $('#J_sqlPreWrapper');
 	var $sampleAddressSel = $('#J_sampleAddress'),
 		$sampleDbNameSel = $('#J_sampleDbName'),
 		$targetAddressSel = $('#J_targetAddress'),
@@ -42,13 +60,15 @@ function initShowSqlBtn() {
 		$this.attr({disabled: true});
 		$.getJSON(url, params, function(data){
 			$this.attr({disabled: false});
-			$sqlPre.empty();
 			if(!data || !data.sqlList) {
 				return;
 			}
+			var $sqlPre = $('<pre class="brush: sql" id="J_sqlPre"></pre>');
+			$sqlPreWrapper.empty().append($sqlPre);
 			$.each(data.sqlList, function(i, sql){
 				$sqlPre.append(sql + "\n\n");
 			});
+			SyntaxHighlighter.highlight($sqlPre[0]);
 		});
 	});
 }
@@ -89,11 +109,11 @@ function initDbNameSel(addressSelSelector, dbNameSelSelector) {
 }
 
 function initClearBtn(){
-	var $sqlPre = $('#J_sqlPre'),
+	var $sqlPreWrapper = $('#J_sqlPreWrapper'),
 		$sampleAddressSel = $('#J_sampleAddress'),
 		$targetAddressSel = $('#J_targetAddress');
 	$('#J_clearBtn').on('click', function(){
-		$sqlPre.empty();
+		$sqlPreWrapper.empty();
 		$sampleAddressSel.val('');
 		$sampleAddressSel.trigger('change');
 		$targetAddressSel.val('');
@@ -103,7 +123,7 @@ function initClearBtn(){
 </script>
 </head>
 <body>
-<div style="margin:50px auto; width: 1000px;">
+<div style="margin:50px auto; width: 900px;">
 	<div style="text-align:center;">
 		<h2 style="font-family: 微软雅黑">数据库结构比较工具</h2>
 		<table class="table table-bordered" style="width: 660px; margin: 30px auto 0px;">
@@ -153,8 +173,7 @@ function initClearBtn(){
 		</table>
 	</div>
 	<hr/>
-	<div style="margin-top: 30px;">
-		<pre id="J_sqlPre" style="height: 550px; overflow-y:auto;"></pre>
+	<div id="J_sqlPreWrapper" style="margin-top: 30px;">
 	</div>
 </div>
 </body>
