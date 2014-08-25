@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,10 +50,8 @@ public class DataBaseController {
 			String targetDbName,
 			HttpServletResponse response) throws Exception {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		Future<DataBase> sampleDbFuture = getLoadedDbFuture(sampleAddress, sampleDbName);
-		Future<DataBase> targetDbFuture = getLoadedDbFuture(targetAddress, targetDbName);
-		DataBase sampleDb = sampleDbFuture.get();
-		DataBase targetDb = targetDbFuture.get();
+		DataBase sampleDb = getLoadedDb(sampleAddress, sampleDbName);
+		DataBase targetDb = getLoadedDb(targetAddress, targetDbName);
 		if(sampleDb == null) {
 			resultMap.put("success", false);
 			resultMap.put("message", "样本数据库不存在!");
@@ -92,12 +87,4 @@ public class DataBaseController {
 		return dataBaseService.fillDataBaseWithTables(address, db);
 	}
 	
-	private Future<DataBase> getLoadedDbFuture(final String address, final String dbName) {
-		return Executors.newSingleThreadScheduledExecutor().submit(new Callable<DataBase>() {
-			@Override
-			public DataBase call() throws Exception {
-				return getLoadedDb(address, dbName);
-			}
-		});
-	}
 }
